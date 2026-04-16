@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Intro Quizzer - Vue SPA</title>
+  <title>ITE153 Quizzer 2026</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -28,7 +28,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
-            <h1 class="text-xl font-black tracking-tight text-slate-800">AI Academy</h1>
+            <h1 class="text-xl font-black tracking-tight text-slate-800">ITE153</h1>
             <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Self-Study Module</p>
           </div>
         </div>
@@ -46,7 +46,7 @@
           <div v-if="state.view === 'landing'" key="landing" class="space-y-6">
             <div class="bg-indigo-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
               <div class="relative z-10">
-                <h2 class="text-2xl font-bold mb-2">Artificial Intelligence</h2>
+                <h2 class="text-2xl font-bold mb-2">ITE153 QUIZZER 2026</h2>
                 <p class="text-indigo-200 text-sm mb-6 leading-relaxed">Ready to test your knowledge on the core concepts, history, and future of machine intelligence?</p>
                 <div class="inline-flex items-center gap-2 bg-indigo-800/50 px-3 py-1.5 rounded-full text-xs font-semibold">
                   <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -112,6 +112,10 @@
                 </button>
               </div>
 
+              <button v-if="!state.isAnswered" @click="actions.finishEarly" class="mt-4 w-full bg-red-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:bg-red-700 transition-all">
+                Finish Quiz Early
+              </button>
+
               <!-- Explanation Area -->
               <transition name="page">
                 <div v-if="state.isAnswered" class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -139,15 +143,17 @@
               
               <div class="flex justify-center items-center gap-12 mb-10">
                 <div>
-                  <p class="text-5xl font-black text-indigo-600">{{ state.score }}</p>
+                  <p class="text-5xl font-black text-indigo-600">{{ state.score }} / {{ state.attempted }}</p>
                   <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Correct</p>
                 </div>
                 <div class="w-px h-12 bg-slate-100"></div>
                 <div>
-                  <p class="text-5xl font-black text-slate-800">{{ Math.round((state.score / activeQuestions.length) * 100) }}%</p>
+                  <p class="text-5xl font-black text-slate-800">{{ Math.round((state.score / Math.max(state.attempted, 1)) * 100) }}%</p>
                   <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Score</p>
                 </div>
               </div>
+
+              <p class="text-sm text-slate-400 mt-2 text-center">Questions Completed: {{ state.attempted }} / {{ activeQuestions.length }}</p>
 
               <button @click="actions.reset" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all">
                 Finish & Go Home
@@ -157,10 +163,6 @@
 
         </transition>
       </main>
-
-      <footer class="mt-12 text-center">
-        <p class="text-slate-300 text-[10px] font-bold uppercase tracking-[0.2em]">Framework: Vue 3 / Architecture: SPA</p>
-      </footer>
     </div>
   </div>
 
@@ -170,346 +172,760 @@
     const QUIZ_DATA = {
       'Module 1 Ai': [
         {
-          "question": "How does the document define Artificial Intelligence in its first definition?",
-          "options": ["The creation of mechanical robots", "The study of computer systems that model the human mind", "The replacement of human workers with software", "The development of faster internet protocols"],
+          "question": "Which mathematician wrote the 1950 paper 'Computing Machinery and Intelligence'?",
+          "options": ["John McCarthy", "Alan Turing", "Andrew Moore", "Bill Gates"],
           "correct": 1,
-          "explanation": "Page 3 defines AI as the study of computer systems that attempt to model and apply the intelligence of the human mind."
+          "explanation": "Page 5 notes that Alan Turing wrote this landmark paper and asked the question, 'Can machines think?'"
         },
         {
-          "question": "In what year did Alan Turing write 'Computing Machinery and Intelligence'?",
-          "options": ["1945", "1950", "1956", "1960"],
-          "correct": 1,
-          "explanation": "According to page 5, English mathematician Alan Turing wrote this landmark paper in 1950."
-        },
-        {
-          "question": "Who is credited with coining the phrase 'Artificial Intelligence'?",
-          "options": ["Alan Turing", "Bill Gates", "John McCarthy", "Elon Musk"],
+          "question": "What is defined as the capability of a machine to imitate intelligent human behavior?",
+          "options": ["Robotics", "Deep Learning", "Artificial Intelligence", "Machine Learning"],
           "correct": 2,
-          "explanation": "Page 5 states that John McCarthy coined the phrase 'study of Artificial Intelligence' in a 1956 workshop proposal."
+          "explanation": "Page 3 provides this as one of the three primary definitions for A.I."
         },
         {
-          "question": "Which workshop served as a major foundation for AI further work in 1956?",
-          "options": ["The Oxford Workshop", "The Dartmouth Workshop", "The Silicon Valley Summit", "The MIT Conference"],
-          "correct": 1,
-          "explanation": "Page 5 mentions that further work came out of a 1956 workshop at Dartmouth sponsored by John McCarthy."
-        },
-        {
-          "question": "Which company is mentioned as a 'major player' in AI transcendence and Deep Learning?",
-          "options": ["Apple", "Microsoft", "Google", "Samsung"],
+          "question": "Who coined the phrase 'Artificial Intelligence' in 1956?",
+          "options": ["Alan Turing", "Elon Musk", "John McCarthy", "Steve Jobs"],
           "correct": 2,
-          "explanation": "Page 7 explicitly identifies Google as a major player in AI transcendence and Deep Learning."
+          "explanation": "According to Page 5, John McCarthy coined the term during a workshop proposal at Dartmouth."
         },
         {
-          "question": "What is 'Deep Learning' based on according to the text?",
-          "options": ["Hardware upgrades", "Algorithms", "Manual data entry", "Social media trends"],
+          "question": "Which company is mentioned as a major player in AI transcendence and Deep Learning?",
+          "options": ["Apple", "Microsoft", "Samsung", "Google"],
+          "correct": 3,
+          "explanation": "Page 7 explicitly states that Google has been a major player in these fields."
+        },
+        {
+          "question": "What is the core basis of Deep Learning according to the document?",
+          "options": ["Hardware evolution", "Algorithms", "Manual data entry", "Internet speed"],
           "correct": 1,
-          "explanation": "Page 7 defines Deep Learning as machine learning based on algorithms."
+          "explanation": "Page 7 defines deep learning as a machine learning method based on algorithms."
         },
         {
           "question": "Which of these is listed as a 'Challenge' for AI?",
-          "options": ["Battery life", "Intuitive Thinking", "Internet speed", "Screen resolution"],
-          "correct": 1,
-          "explanation": "Page 8 lists 'Intuitive Thinking' as one of the key challenges for AI."
-        },
-        {
-          "question": "Which challenge refers to the ability of AI to make decisions or evaluations?",
-          "options": ["Tolerance Power", "Computing Power", "Judging Power", "Deep Learning"],
+          "options": ["Precision", "Space exploration", "Intuitive Thinking", "Fraud detection"],
           "correct": 2,
-          "explanation": "Page 8 lists 'Judging Power' as a significant challenge for artificial intelligence."
+          "explanation": "Page 8 lists 'Intuitive Thinking' as one of the four main challenges for AI."
         },
         {
-          "question": "Which field is NOT mentioned as a future application of AI on page 9?",
-          "options": ["Self-driving cars", "Improved medical care", "Time travel", "Future explorations"],
+          "question": "In what year did the Dartmouth workshop take place?",
+          "options": ["1950", "1955", "1956", "1960"],
           "correct": 2,
-          "explanation": "Page 9 lists self-driving cars, medical care, and future explorations, but does not mention time travel."
+          "explanation": "Page 5 mentions that further work came out of a 1956 workshop at Dartmouth."
         },
         {
-          "question": "What is one 'Pro' of AI regarding work efficiency?",
-          "options": ["It creates more jobs", "It can do repetitive and time-consuming tasks", "It understands human emotions", "It is inexpensive to maintain"],
+          "question": "Which area is CMU betting will be 'hugely important' in the near future?",
+          "options": ["Space mining", "Self Driving Cars", "Robotic pets", "Video game design"],
           "correct": 1,
-          "explanation": "Page 10 lists the ability to do repetitive and time-consuming tasks as a benefit."
+          "explanation": "Page 9 identifies self-driving cars as a future area of high importance."
         },
         {
-          "question": "Which 'Con' is associated with the emotional capacity of AI?",
-          "options": ["Too much empathy", "Lacking the emotional side", "Feeling pain", "Caring too much for humans"],
+          "question": "Which pro of AI is related to the extraction of resources?",
+          "options": ["Fraud detection", "Space exploration", "Mining process", "Precision and Accuracy"],
+          "correct": 2,
+          "explanation": "Page 10 lists 'Used for mining process' as a pro of using AI."
+        },
+        {
+          "question": "What is a significant social 'Con' of AI mentioned in the slides?",
+          "options": ["Too much creativity", "Unemployment", "High electricity use", "Better medical care"],
           "correct": 1,
-          "explanation": "Page 10 notes that AI is 'Lacking the emotional side'."
+          "explanation": "Page 10 lists 'Unemployment' as a negative consequence of AI implementation."
         },
         {
-          "question": "What social issue is listed as a potential negative consequence (Con) of AI?",
-          "options": ["Overpopulation", "Unemployment", "High taxes", "Global warming"],
+          "question": "What does the document say AI lacks compared to humans?",
+          "options": ["Speed", "Common sense", "Accuracy", "Record management"],
           "correct": 1,
-          "explanation": "Unemployment is listed on page 10 as a downside of increased AI usage."
+          "explanation": "Page 10 lists 'Lack common sense' as one of the disadvantages of AI."
         },
         {
-          "question": "What could happen to human abilities if we become too dependent on AI?",
-          "options": ["They will increase", "They may diminish", "They will stay the same", "They will become robotic"],
+          "question": "How does the document describe AI's role in medical care?",
+          "options": ["Replacing doctors entirely", "Diagnosis and Treatment", "Lacking accuracy", "Only for billing"],
           "correct": 1,
-          "explanation": "Page 10 suggests that the 'Abilities of humans may diminish' due to AI."
+          "explanation": "Page 10 notes that AI is beneficial for 'Diagnosis and Treatment' in the medical field."
         },
         {
-          "question": "Which of these is a physical task AI/Robotics can assist with?",
-          "options": ["Mining processes", "Eating food", "Sleeping", "Growing hair"],
+          "question": "What is identified as a cost-related disadvantage of AI?",
+          "options": ["Low electricity bills", "Free software", "Maintenance and repair", "Marketing"],
+          "correct": 2,
+          "explanation": "Page 10 highlights the 'Cost incurred in the maintenance and repair' as a con."
+        },
+        {
+          "question": "AI systems are described as being able to function without...",
+          "options": ["Electricity", "Stopping", "Software", "Data"],
+          "correct": 1,
+          "explanation": "Page 10 states a pro of AI is the ability to 'Function without stopping'."
+        },
+        {
+          "question": "What risk is mentioned regarding AI in the 'wrong hands'?",
+          "options": ["Better education", "Destruction", "High profits", "Increased safety"],
+          "correct": 1,
+          "explanation": "Page 10 warns that 'Wrong hands causes destruction'."
+        },
+        {
+          "question": "Which of the following is an example of AI in the 'Current Status' section?",
+          "options": ["Time machines", "Video Game Characters", "Teleportation", "Smart clothes"],
+          "correct": 1,
+          "explanation": "Page 7 lists 'Video Games Characters' as a form AI has taken recently."
+        },
+        {
+          "question": "According to the conclusion, AI aims to create what kind of systems?",
+          "options": ["Humanoid robots", "Intelligent Agents", "Social networks", "Operating systems"],
+          "correct": 1,
+          "explanation": "Page 11 states that AI textbooks define the field as 'The Study and Design of Intelligent Agents'."
+        },
+        {
+          "question": "John McCarthy defines AI as the science and engineering of making what?",
+          "options": ["Better computers", "Intelligent Machines", "Digital assistants", "Faster algorithms"],
+          "correct": 1,
+          "explanation": "The conclusion on Page 11 quotes McCarthy's definition: 'The Science and Engineering of making intelligent Machines'."
+        },
+        {
+          "question": "Which challenge refers to the machine's ability to make decisions or evaluations?",
+          "options": ["Tolerance Power", "Judging Power", "Computing Power", "Deep Learning"],
+          "correct": 1,
+          "explanation": "Page 8 lists 'Judging Power' as a specific challenge for AI."
+        },
+        {
+          "question": "What is a negative outcome for human skills due to AI dependency?",
+          "options": ["Abilities may diminish", "Increased physical strength", "Better memory", "Enhanced creativity"],
           "correct": 0,
-          "explanation": "Page 10 mentions that AI is used for mining processes and laborious tasks."
+          "explanation": "Page 10 notes that 'Abilities of humans may diminish' as they become dependent on machines."
         },
         {
-          "question": "What does John McCarthy define AI as in the conclusion?",
-          "options": ["The death of humanity", "The science and engineering of making intelligent machines", "The study of internet browsing", "A method for faster calculations"],
-          "correct": 1,
-          "explanation": "The conclusion on page 11 states McCarthy defines it as 'The Science and Engineering of making intelligent Machines'."
-        },
-        {
-          "question": "How does an 'Intelligent Agent' interact with its environment?",
-          "options": ["It ignores it", "It perceives its environment and takes actions", "It destroys it", "It asks humans what to do"],
-          "correct": 1,
-          "explanation": "Page 11 describes an intelligent agent as a system that perceives its environment and takes actions to maximize success."
-        },
-        {
-          "question": "What is a disadvantage regarding the maintenance of AI?",
-          "options": ["It is free", "Cost incurred in maintenance and repair", "It repairs itself", "It never breaks down"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Cost incurred in the maintenance and repair' as a con."
-        },
-        {
-          "question": "Which type of 'power' relates to the speed of AI processing?",
-          "options": ["Solar Power", "Computing Power", "Wind Power", "Emotional Power"],
-          "correct": 1,
-          "explanation": "Computing Power is listed as a challenge on page 8."
-        },
-        {
-          "question": "Which robotic application is mentioned in the context of surgery?",
-          "options": ["Robotic heart", "Robotic radiosurgery", "Robotic massage", "Robotic band-aids"],
-          "correct": 1,
-          "explanation": "Page 10 specifically mentions 'Robotic radiosurgery' as a pro/application."
-        },
-        {
-          "question": "What risk does the document mention regarding 'wrong hands'?",
-          "options": ["It will become boring", "It causes destruction", "It will run out of battery", "It will stop working"],
-          "correct": 1,
-          "explanation": "Page 10 states that 'Wrong hands causes destruction' in the context of AI."
-        },
-        {
-          "question": "Which platform is Cortana associated with?",
+          "question": "Which platform is Cortana primarily associated with in the document?",
           "options": ["iOS", "Android", "Windows Mobile", "Linux"],
           "correct": 2,
-          "explanation": "Page 4 identifies Cortana as an assistant on the Windows Mobile platform."
+          "explanation": "Page 4 identifies Cortana as an assistant on Windows Mobile."
         },
         {
-          "question": "AI textbooks define the field as 'The Study and Design of...' what?",
-          "options": ["Modern Computers", "Intelligent Agents", "Social Networks", "Data Structures"],
-          "correct": 1,
-          "explanation": "The conclusion on page 11 mentions that AI textbooks define the field as 'The Study and Design of Intelligent Agents'."
-        },
-        {
-          "question": "Which of these is a characteristic of AI tasks listed in the document?",
-          "options": ["Repetitive", "Only creative", "Only emotional", "Always unpredictable"],
-          "correct": 0,
-          "explanation": "Page 10 states AI can do 'repetitive and time-consuming tasks'."
-        },
-        {
-          "question": "According to page 7, where can AI characters be found?",
-          "options": ["In books", "In video games", "In radio shows", "In paintings"],
-          "correct": 1,
-          "explanation": "Video Game Characters are listed under the 'Current Status of AI' on page 7."
-        },
-        {
-          "question": "What is the primary way humans interact with Siri or Google Now?",
-          "options": ["Typing only", "Using our voice", "Thinking at it", "Hand signals"],
-          "correct": 1,
-          "explanation": "Page 4 explains that these assistants help find information 'when we ask for it using our voice'."
-        },
-        {
-          "question": "Which of the following is NOT a challenge listed on page 8?",
-          "options": ["Judging Power", "Tolerance Power", "Battery Life", "Computing Power"],
+          "question": "What is one way digital assistants help us using our voice?",
+          "options": ["Writing novels", "Cooking food", "Setting reminders", "Driving cars"],
           "correct": 2,
-          "explanation": "Battery life is not listed on page 8; the others are mentioned as challenges."
+          "explanation": "Page 4 lists 'set reminders' as a task digital assistants perform via voice command."
         },
         {
-          "question": "What is one mentioned use of AI in records management?",
-          "options": ["Deleting all files", "Fraud detection", "Printing paper", "Social media posting"],
+          "question": "In the future, AI is expected to open doors to what?",
+          "options": ["Better video games", "Future explorations", "Historical research", "Manual labor"],
           "correct": 1,
-          "explanation": "Page 10 mentions 'Fraud detection, manage records' as a pro of AI."
+          "explanation": "Page 9 states that AI will 'Open up doors to future explorations'."
         },
         {
-          "question": "AI is described as a branch of which science?",
-          "options": ["Social Science", "Computer Science", "Biological Science", "Physical Science"],
+          "question": "What does 'Risk Reducing' refer to in the document?",
+          "options": ["Financial investment", "AI taking over dangerous tasks", "Security passwords", "Insurance"],
           "correct": 1,
-          "explanation": "Pages 3 and 11 define AI as a branch of Computer Science."
+          "explanation": "Page 10 lists 'Risk Reducing' as a pro, implying machines can take on hazardous jobs."
         },
         {
-          "question": "What 'test' was named after the mathematician who asked 'Can machines think?'",
-          "options": ["The McCarthy Test", "The Turing Test", "The Google Test", "The Dartmouth Test"],
-          "correct": 1,
-          "explanation": "Page 5 highlights the 'Turing test' as part of the early history of AI."
+          "question": "Which of these is a creative limitation of AI?",
+          "options": ["Lack of data", "Lack of memory", "Lack a creative mind", "Lack of speed"],
+          "correct": 2,
+          "explanation": "Page 10 explicitly mentions 'Lack a creative mind' as a disadvantage of AI."
+        }
+      ],
+      'Module 2 Industry 5': [
+        {
+          "question": "What is defined as the capability of a machine to imitate intelligent human behavior?",
+          "options": ["Robotics", "Deep Learning", "Artificial Intelligence", "Machine Learning"],
+          "correct": 2,
+          "explanation": "Page 3 of the document provides this as one of the three primary definitions for A.I. [cite: 15]"
         },
         {
-          "question": "Which 'Con' refers to AI's inability to think outside its programming?",
-          "options": ["Lack of power", "Not able to act any different", "Too much creativity", "High speed"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Not able to act any different' as a limitation/con."
+          "question": "Who coined the phrase 'Artificial Intelligence' in 1956?",
+          "options": ["Alan Turing", "Elon Musk", "John McCarthy", "Steve Jobs"],
+          "correct": 2,
+          "explanation": "John McCarthy coined the term 'Artificial Intelligence' in a proposal for a workshop at Dartmouth in 1956. [cite: 28, 29]"
         },
         {
-          "question": "What type of 'pets' are mentioned as an application of AI?",
-          "options": ["Furry pets", "Robotic pets", "Virtual pets", "Invisible pets"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Robotic pets' as a positive application of AI."
-        },
-        {
-          "question": "In the context of the future, what is CMU betting on?",
-          "options": ["Flying cars", "AI areas being hugely important", "The end of AI", "Manual labor"],
-          "correct": 1,
-          "explanation": "Page 9 mentions 'CMU is betting several other AI areas are going to be hugely important'."
-        },
-        {
-          "question": "Which task can AI perform without stopping?",
-          "options": ["Creative writing", "Laborious and repetitive tasks", "Emotional counseling", "Philosophy"],
-          "correct": 1,
-          "explanation": "Page 10 states that AI can 'Function without stopping'."
-        },
-        {
-          "question": "What does AI lack that humans use for everyday problem solving?",
-          "options": ["Batteries", "Common sense", "Electricity", "Speed"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Lack common sense' as a con of AI."
-        },
-        {
-          "question": "What was the title of Alan Turing's 1950 paper?",
-          "options": ["I, Robot", "Computing Machinery and Intelligence", "The AI Handbook", "Dartmouth Proposal"],
-          "correct": 1,
-          "explanation": "Page 5 identifies the paper as 'Computing Machinery and Intelligence'."
-        },
-        {
-          "question": "Which of these is a 'Pro' of AI in space?",
-          "options": ["Space exploration", "Alien communication", "Planet destruction", "Building hotels"],
-          "correct": 0,
-          "explanation": "Page 10 lists 'Space exploration' as a pro of AI."
-        },
-        {
-          "question": "What 'touch' is AI said to lack?",
-          "options": ["The robotic touch", "The human touch", "The metal touch", "The cold touch"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Lack the human touch' as a con."
-        },
-        {
-          "question": "How is AI described in relation to risk?",
-          "options": ["Risk Increasing", "Risk Reducing", "Risk Neutral", "Always Dangerous"],
-          "correct": 1,
-          "explanation": "Page 10 describes AI as 'Risk Reducing'."
-        },
-        {
-          "question": "Which is an example of AI in navigation mentioned in the text?",
-          "options": ["Paper maps", "GPS", "Stars", "Compass"],
-          "correct": 1,
-          "explanation": "Page 7 lists 'GPS/ Voice Recognition' as a current form of AI."
-        },
-        {
-          "question": "Which is NOT a digital personal assistant mentioned on page 4?",
-          "options": ["Siri", "Alexa", "Cortana", "Google Now"],
-          "correct": 1,
-          "explanation": "While Alexa is an assistant, the document specifically lists Siri, Cortana, and Google Now."
-        },
-        {
-          "question": "What is one medical benefit of AI mentioned on page 10?",
-          "options": ["Diagnosis and Treatment", "Granting immortality", "Replacing all doctors", "Reading minds"],
-          "correct": 0,
-          "explanation": "Page 10 lists 'Diagnosis and Treatment' as a pro of AI."
-        },
-        {
-          "question": "AI 'Precision and Accuracy' is listed as a:",
-          "options": ["Pro", "Con", "Challenge", "Future goal"],
-          "correct": 0,
-          "explanation": "Page 10 lists 'Precision and Accuracy' under the Pros section."
-        },
-        {
-          "question": "The document mentions that humans may become _____ on machines.",
-          "options": ["Angry", "Dependent", "Frightened", "Bosses"],
-          "correct": 1,
-          "explanation": "Page 10 states 'Humans may become dependent on machines' as a con."
-        },
-        {
-          "question": "Which of these is a 'Con' regarding the mind of AI?",
-          "options": ["Too creative", "Lack a creative mind", "Always dreaming", "Forgetful"],
-          "correct": 1,
-          "explanation": "Page 10 lists 'Lack a creative mind' as a con."
-        },
-        {
-          "question": "What does AI aim to 'model and apply'?",
-          "options": ["Animal instincts", "Intelligence of the human mind", "Weather patterns", "Stock market trends"],
-          "correct": 1,
-          "explanation": "Page 3 defines AI as attempting to model the intelligence of the human mind."
-        },
-        {
-          "question": "In what decade was the phrase 'Artificial Intelligence' coined?",
-          "options": ["1940s", "1950s", "1960s", "1970s"],
-          "correct": 1,
-          "explanation": "It was coined in 1956 (the 1950s) according to page 5."
-        },
-        {
-          "question": "According to page 10, AI can be used for which industrial process?",
-          "options": ["Farming", "Mining process", "Fishing", "Cooking"],
-          "correct": 1,
-          "explanation": "Page 10 explicitly mentions the 'mining process' as a pro/application."
-        },
-        {
-          "question": "What is the result of AI 'superseding' humans?",
-          "options": ["A con of AI", "A pro of AI", "An early history fact", "A requirement for Siri"],
-          "correct": 0,
-          "explanation": "Page 10 lists 'Robots superseding humans' as a con."
-        },
-        {
-          "question": "Which personal assistant is NOT mentioned as being on Android/iOS/Windows Mobile?",
-          "options": ["Siri", "Google Now", "Cortana", "ChatGPT"],
+          "question": "Which company is mentioned as a major player in AI transcendence and Deep Learning?",
+          "options": ["Apple", "Microsoft", "Samsung", "Google"],
           "correct": 3,
-          "explanation": "Page 4 mentions the first three, but not ChatGPT."
+          "explanation": "The document explicitly states that Google has been a major player in AI transcendence and Deep Learning. [cite: 39]"
         },
         {
-          "question": "The conclusion states AI is the intelligence of what?",
-          "options": ["Humans", "Animals", "Machines", "Plants"],
+          "question": "What is the core basis of Deep Learning according to the slides?",
+          "options": ["Hardware evolution", "Algorithms", "Manual data entry", "Internet speed"],
+          "correct": 1,
+          "explanation": "Deep learning is defined as a form of machine learning based on algorithms. [cite: 40]"
+        },
+        {
+          "question": "Which of these is listed as a 'Challenge' for AI?",
+          "options": ["Precision", "Space exploration", "Intuitive Thinking", "Fraud detection"],
           "correct": 2,
-          "explanation": "The conclusion on page 11 states AI is the 'intelligence of machines'."
-        }
-      ],
-      'History & Turing': [
-        {
-          question: "What was the name of Alan Turing's landmark 1950 paper?",
-          options: ["The Imitation Game", "Artificial Intelligence Workshop", "Computing Machinery and Intelligence", "The Thinking Machine"],
-          correct: 2,
-          explanation: "Alan Turing wrote 'Computing Machinery and Intelligence' in 1950, where he asked 'Can machines think?' (Page 5)."
+          "explanation": "Page 8 identifies 'Intuitive Thinking' as one of the significant challenges facing AI development. [cite: 47]"
         },
         {
-          question: "In what year and at what workshop was the phrase 'Artificial Intelligence' coined?",
-          options: ["1950 (London)", "1956 (Dartmouth)", "1960 (MIT)", "1945 (Oxford)"],
-          correct: 1,
-          explanation: "The phrase was coined by John McCarthy for a 1956 workshop at Dartmouth (Page 5)."
-        }
-      ],
-      'Challenges & Future': [
-        {
-          question: "Which of the following is NOT listed as a challenge for AI on Page 8?",
-          options: ["Computing Power", "Intuitive Thinking", "Judging Power", "Internet Speed"],
-          correct: 3,
-          explanation: "The document lists Computing Power, Tolerance Power, Intuitive Thinking, and Judging Power as primary challenges."
+          "question": "What specific question did Alan Turing ask in his 1950 landmark paper?",
+          "options": ["Are robots alive?", "Can machines think?", "What is intelligence?", "Can computers feel?"],
+          "correct": 1,
+          "explanation": "In his 1950 paper, Alan Turing asked the fundamental question: 'Can machines think?' [cite: 26, 27]"
         },
         {
-          question: "According to Moore, what are some areas AI is expected to impact significantly?",
-          options: ["Self-driving cars and Medical Care", "Video games and Social Media", "Cooking and Cleaning", "Space flight and Mining"],
-          correct: 0,
-          explanation: "Page 9 notes Moore (CMU) bets on self-driving cars and improved medical care as hugely important future areas."
-        }
-      ],
-      'Pros & Cons': [
-        {
-          question: "Which of these is a listed 'Pro' of AI in the medical field?",
-          options: ["Robot pets", "Robotic radiosurgery", "Mining process", "Fraud detection"],
-          correct: 1,
-          explanation: "Page 10 lists 'Robotic radiosurgery' and 'Diagnosis and Treatment' as specific medical advantages."
+          "question": "Which university's expert (Moore) is cited regarding the future importance of AI areas?",
+          "options": ["MIT", "Stanford", "Harvard", "CMU (Carnegie Mellon University)"],
+          "correct": 3,
+          "explanation": "The document mentions that Moore says CMU is betting on several AI areas being hugely important. [cite: 56]"
         },
         {
-          question: "Which disadvantage highlights the risk of humans becoming dependent on machines?",
-          options: ["Unemployment", "High maintenance costs", "Abilities of humans may diminish", "Lack of common sense"],
-          correct: 2,
-          explanation: "Page 10 mentions that human abilities may diminish and humans may become dependent on machines as potential cons."
+          "question": "Which of these is a 'Pro' of AI related to hazardous environments?",
+          "options": ["Robotic pets", "Space exploration", "Record management", "Creative mind"],
+          "correct": 1,
+          "explanation": "Space exploration is listed as a benefit (Pro) of AI. [cite: 63, 68]"
+        },
+        {
+          "question": "What is a significant social 'Con' of AI mentioned in the slides?",
+          "options": ["Too much creativity", "Unemployment", "High electricity use", "Better medical care"],
+          "correct": 1,
+          "explanation": "The document lists 'Unemployment' as one of the cons or disadvantages of AI. [cite: 68, 78]"
+        },
+        {
+          "question": "Which of the following is an AI challenge related to decision-making?",
+          "options": ["Computing Power", "Judging Power", "Mining Process", "Repetitive Tasks"],
+          "correct": 1,
+          "explanation": "Page 8 lists 'Judging Power' as a primary challenge for Artificial Intelligence. [cite: 51]"
+        },
+        {
+          "question": "AI systems are described as being able to function without what?",
+          "options": ["Electricity", "Stopping", "Software", "Data"],
+          "correct": 1,
+          "explanation": "One of the pros mentioned is that AI can function without stopping. [cite: 71]"
+        },
+        {
+          "question": "What is identified as a cost-related disadvantage of AI?",
+          "options": ["Low electricity bills", "Free software", "Maintenance and repair", "Marketing costs"],
+          "correct": 2,
+          "explanation": "The document notes the 'Cost incurred in the maintenance and repair' as a con of AI. [cite: 73]"
+        },
+        {
+          "question": "According to the document, what does AI lack compared to humans?",
+          "options": ["Speed", "Common sense", "Accuracy", "Record management"],
+          "correct": 1,
+          "explanation": "A listed disadvantage of AI is its 'Lack common sense.' [cite: 77]"
+        },
+        {
+          "question": "What risk is mentioned regarding AI in the 'wrong hands'?",
+          "options": ["Better education", "Destruction", "High profits", "Increased safety"],
+          "correct": 1,
+          "explanation": "The document warns that AI in the 'Wrong hands causes destruction.' [cite: 82]"
+        },
+        {
+          "question": "Which of the following is an example of AI in the 'Current Status' section?",
+          "options": ["Time machines", "Video Games Characters", "Teleportation", "Smart clothes"],
+          "correct": 1,
+          "explanation": "Video Game Characters are listed as a current shape and form of AI. [cite: 36]"
+        },
+        {
+          "question": "What does the document state might happen to human abilities due to AI?",
+          "options": ["They will increase", "They may diminish", "They stay the same", "They become magical"],
+          "correct": 1,
+          "explanation": "The document suggests that the 'Abilities of humans may diminish' as a potential con. [cite: 79]"
+        },
+        {
+          "question": "According to the conclusion, AI aims to create what kind of agents?",
+          "options": ["Humanoid agents", "Intelligent Agents", "Secret agents", "Travel agents"],
+          "correct": 1,
+          "explanation": "AI textbooks define the field as 'The Study and Design of Intelligent Agents.' [cite: 11]"
+        },
+        {
+          "question": "What is one way digital assistants help us using our voice?",
+          "options": ["Writing novels", "Cooking food", "Set reminders", "Driving cars"],
+          "correct": 2,
+          "explanation": "The document mentions that digital assistants help us set reminders using our voice. [cite: 22]"
+        },
+        {
+          "question": "Which assistant is specifically mentioned for the Windows Mobile platform?",
+          "options": ["Siri", "Cortana", "Alexa", "Bixby"],
+          "correct": 1,
+          "explanation": "Cortana is listed as the intelligent digital personal assistant for Windows Mobile. [cite: 18, 19]"
+        },
+        {
+          "question": "Which future AI application is related to healthcare?",
+          "options": ["Self-driving cars", "Improved Medical Care & Treatment", "Mining process", "Video games"],
+          "correct": 1,
+          "explanation": "Improved medical care and treatment is listed under the 'Future of AI' section. [cite: 58]"
+        },
+        {
+          "question": "What does the document say about AI's 'emotional side'?",
+          "options": ["It is very empathetic", "It is lacking the emotional side", "It is better than humans", "It is developing fast"],
+          "correct": 1,
+          "explanation": "The document lists 'Lacking the emotional side' as a disadvantage of AI. [cite: 67]"
+        },
+        {
+          "question": "What is one task AI is 'Pro' at because it is tedious for humans?",
+          "options": ["Creative thinking", "Repetitive and time-consuming tasks", "Feeling empathy", "Using common sense"],
+          "correct": 1,
+          "explanation": "A listed pro is that AI can do 'repetitive and time-consuming tasks.' [cite: 69]"
+        },
+        {
+          "question": "In what year did John McCarthy define AI as the science of making intelligent machines?",
+          "options": ["1950", "1955", "1960", "2000"],
+          "correct": 1,
+          "explanation": "The conclusion notes that John McCarthy defined AI in 1955 as the 'Science and Engineering of making intelligent Machines.' [cite: 11]"
+        },
+        {
+          "question": "Which challenge refers to the power of a machine to process data?",
+          "options": ["Tolerance Power", "Computing Power", "Creative mind", "Human touch"],
+          "correct": 1,
+          "explanation": "Computing Power is listed as one of the challenges for AI. [cite: 44]"
+        },
+        {
+          "question": "What is a potential future concern regarding the relationship between robots and humans?",
+          "options": ["Robots helping humans", "Robots superseding humans", "Robots learning to cook", "Robots going to school"],
+          "correct": 1,
+          "explanation": "The document mentions 'Robots superseding humans' as a potential future con. [cite: 80]"
+        }
+      ],
+      'Module 3 Intelligent Agent Lecture': [
+          {
+            "question": "What is the primary definition of an Intelligent Agent?",
+            "options": ["A robot that looks like a human", "An entity that perceives, decides, and acts to achieve goals", "A computer program that only stores data", "A sensor that monitors temperature"],
+            "correct": 1,
+            "explanation": "Page 2 defines an Intelligent Agent as an entity that perceives its environment, makes decisions, and acts to achieve goals."
+          },
+          {
+            "question": "Which component allows an agent to perceive its environment?",
+            "options": ["Actuators", "Processors", "Sensors", "Databases"],
+            "correct": 2,
+            "explanation": "According to Page 3 and 4, an agent perceives its environment through sensors."
+          },
+          {
+            "question": "Which of the following is an example of an actuator?",
+            "options": ["Camera", "Microphone", "Display output", "Keyboard input"],
+            "correct": 2,
+            "explanation": "Page 7 lists display output, sending messages, and controlling motors as examples of actuators."
+          },
+          {
+            "question": "What is the three-step cycle of Agent-Environment interaction?",
+            "options": ["Input → Process → Output", "Perceive → Decide → Act", "Listen → Think → Speak", "Scan → Store → Delete"],
+            "correct": 1,
+            "explanation": "Page 5 illustrates the interaction cycle as Perceive → Decide → Act."
+          },
+          {
+            "question": "Which type of agent acts only on the current state using 'if-then' rules?",
+            "options": ["Learning Agent", "Model-Based Agent", "Simple Reflex Agent", "Utility-Based Agent"],
+            "correct": 2,
+            "explanation": "Page 10 describes the Simple Reflex Agent as acting solely on the current state without memory or history."
+          },
+          {
+            "question": "What does a Model-Based Agent maintain to handle unobservable environments?",
+            "options": ["A physical map", "An internal representation (model)", "A list of users", "A backup battery"],
+            "correct": 1,
+            "explanation": "Page 11 states that a Model-Based Agent maintains an internal representation of the world."
+          },
+          {
+            "question": "Which agent acts proactively to achieve long-term objectives?",
+            "options": ["Goal-Based Agent", "Simple Reflex Agent", "Database Agent", "Utility-Based Agent"],
+            "correct": 0,
+            "explanation": "Page 12 defines a Goal-Based Agent as an AI system that acts proactively to achieve specific, long-term objectives."
+          },
+          {
+            "question": "How does a Utility-Based Agent differ from a Goal-Based Agent?",
+            "options": ["It has no goals", "It only reacts to sound", "It calculates the 'best' or most efficient way to reach a goal", "It is hardware-only"],
+            "correct": 2,
+            "explanation": "Page 13 explains that Utility-Based Agents calculate the 'best' way to reach a goal, considering factors like efficiency and safety."
+          },
+          {
+            "question": "Which agent is designed to improve its performance over time through experience?",
+            "options": ["Simple Reflex Agent", "Learning Agent", "Goal-Based Agent", "Model-Based Agent"],
+            "correct": 1,
+            "explanation": "Page 14 defines a Learning Agent as one designed to acquire knowledge from experiences to improve performance."
+          },
+          {
+            "question": "Which of these is NOT listed as a sensor in the document?",
+            "options": ["Keyboard input", "System logs", "Control motors", "Network data"],
+            "correct": 2,
+            "explanation": "Page 7 identifies 'Control motors' as an actuator, while Page 6 lists the others as sensors."
+          },
+          {
+            "question": "What concept explains that an agent chooses the best action but isn't necessarily 'perfect'?",
+            "options": ["Proactivity", "Rationality", "Deep Learning", "Automation"],
+            "correct": 1,
+            "explanation": "Page 8 discusses Rationality, noting that being rational does not mean being perfect."
+          },
+          {
+            "question": "A Learning Agent often uses which type of learning to enhance decision-making?",
+            "options": ["Supervised learning", "Reinforcement learning", "Manual learning", "Rote memorization"],
+            "correct": 1,
+            "explanation": "Page 14 mentions that Learning Agents often employ reinforcement learning to enhance decisions."
+          },
+          {
+            "question": "Which of the following is an example of an Intelligent Agent mentioned on Page 15?",
+            "options": ["A manual calculator", "A printed book", "A Chatbot", "A standard lightbulb"],
+            "correct": 2,
+            "explanation": "Page 15 lists Chatbots, Spam Filters, Game AI, and Robots as examples."
+          },
+          {
+            "question": "Why are Intelligent Agents considered the 'Foundation of AI'?",
+            "options": ["They are the oldest computers", "They are used in automation and smart systems", "They are made of gold", "They don't require electricity"],
+            "correct": 1,
+            "explanation": "Page 16 highlights their importance as the foundation of AI used in automation and smart systems."
+          },
+          {
+            "question": "In the context of agents, what is a 'Critic' used for?",
+            "options": ["To post reviews online", "To provide feedback to a Learning Agent based on performance", "To delete the agent's memory", "To act as a sensor"],
+            "correct": 1,
+            "explanation": "Page 14 notes that Learning Agents use a 'critic' to adapt to dynamic situations and improve."
+          },
+          {
+            "question": "What is the role of a 'Problem Generator' in a Learning Agent?",
+            "options": ["To crash the system", "To suggest new exploratory actions", "To fix hardware bugs", "To act as an actuator"],
+            "correct": 1,
+            "explanation": "Page 14 mentions the 'problem generator' as a component that helps Learning Agents adapt and explore."
+          },
+          {
+            "question": "An agent that uses search/planning algorithms to evaluate future scenarios is likely a:",
+            "options": ["Simple Reflex Agent", "Goal-Based Agent", "Spam Filter", "System log"],
+            "correct": 1,
+            "explanation": "Page 12 states that Goal-Based Agents use search/planning algorithms to evaluate future scenarios."
+          },
+          {
+            "question": "Which component of an agent is responsible for 'updating files or databases'?",
+            "options": ["Sensors", "Actuators", "Environment", "Memory"],
+            "correct": 1,
+            "explanation": "Page 7 lists 'Update files/databases' as an action performed by actuators."
+          },
+          {
+            "question": "Which type of agent lacks 'historical context'?",
+            "options": ["Model-Based Agent", "Learning Agent", "Simple Reflex Agent", "Utility-Based Agent"],
+            "correct": 2,
+            "explanation": "Page 10 specifies that Simple Reflex Agents act without memory or historical context."
+          },
+          {
+            "question": "What can an Intelligent Agent be made of?",
+            "options": ["Only software", "Only hardware", "Both software or hardware", "Only human brain cells"],
+            "correct": 2,
+            "explanation": "Page 2 states that an Intelligent Agent can be software or hardware."
+          },
+          {
+            "question": "Which agent uses a 'performance measure' (utility) to make decisions?",
+            "options": ["Utility-Based Agent", "Reflex Agent", "Spam Filter", "Network Data Agent"],
+            "correct": 0,
+            "explanation": "Page 13 defines a Utility-Based Agent as one that maximizes a defined performance measure (utility)."
+          },
+          {
+            "question": "In the simple definition, an agent acts 'rationally' to achieve its...",
+            "options": ["Sensors", "Goals", "Actuators", "Rules"],
+            "correct": 1,
+            "explanation": "Page 3 states that an agent acts upon the environment to achieve its goals rationally."
+          },
+          {
+            "question": "Which sensor would an AI use to perceive sound?",
+            "options": ["Camera", "System logs", "Microphone", "Keyboard"],
+            "correct": 2,
+            "explanation": "Page 6 lists the microphone as a sensor for perceiving the environment."
+          },
+          {
+            "question": "A Spam Filter is an example of what?",
+            "options": ["An actuator", "An Intelligent Agent", "A physical robot", "A goal-based sensor"],
+            "correct": 1,
+            "explanation": "Page 15 lists the 'Spam Filter' as a common example of an Intelligent Agent."
+          },
+          {
+            "question": "What is the core purpose of the summary provided on Page 17?",
+            "options": ["To list every sensor ever made", "To explain Perceive, Decide, and Act", "To sell AI software", "To talk about history"],
+            "correct": 1,
+            "explanation": "Page 17 summarizes the agent's core functions: Perceive, decide, and act."
+          }
+        ],
+      'Search Algorithms in Artificial Intelligence': [
+        {
+          "question": "What is the primary purpose of a Search Algorithm (SA) in AI?",
+          "options": ["To delete data", "To navigate the problem space and find a solution", "To create hardware", "To increase internet speed"],
+          "correct": 1,
+          "explanation": "The document defines search algorithms as systematic ways to navigate a 'maze' or problem space to reach a goal."
+        },
+        {
+          "question": "Which of the following is a physical task example for Search Algorithms?",
+          "options": ["Network routing", "Sorting documents", "Web browsing", "Game playing"],
+          "correct": 1,
+          "explanation": "The document mentions that SAs are not limited to digital tasks but also physical ones like sorting documents or organizing items in a warehouse."
+        },
+        {
+          "question": "In AI, search techniques are considered what kind of methods?",
+          "options": ["Random methods", "Universal Problem-solving methods", "Slow methods", "Hardware-specific methods"],
+          "correct": 1,
+          "explanation": "Search techniques are described as 'Universal Problem-solving methods' utilized by rational agents."
+        },
+        {
+          "question": "What term refers to the starting point of a search?",
+          "options": ["Goal State", "Search Space", "Initial State", "Transition Model"],
+          "correct": 2,
+          "explanation": "The document defines 'Initial State' as the starting state."
+        },
+        {
+          "question": "What is the 'Search Space'?",
+          "options": ["The physical memory of a PC", "The set of all possible states reachable from the initial state", "The goal of the algorithm", "A specific type of robot"],
+          "correct": 1,
+          "explanation": "Search Space is the set of all possible states that can be reached by applying actions from the initial state."
+        },
+        {
+          "question": "What defines the cost associated with each action or path taken?",
+          "options": ["Goal State", "Path Cost", "Transition Model", "State Space"],
+          "correct": 1,
+          "explanation": "Path Cost is defined as the cost (like time or distance) associated with each action or path taken."
+        },
+        {
+          "explanation": "A 'Solution' is defined as a sequence of actions that leads from the initial state to the goal state.",
+          "options": ["Solution", "Heuristic", "Agent", "Cost"],
+          "question": "A sequence of actions leading from the initial state to the goal state is called a:",
+          "correct": 0
+        },
+        {
+          "question": "What is another name for Uninformed Search?",
+          "options": ["Heuristic Search", "Blind Search", "Competition Search", "A* Search"],
+          "correct": 1,
+          "explanation": "The document states that Uninformed Search is also known as 'Blind Search'."
+        },
+        {
+          "question": "Which search algorithm explores the shallowest nodes first?",
+          "options": ["Depth-First Search", "Uniform Cost Search", "Breadth-First Search", "A* Search"],
+          "correct": 2,
+          "explanation": "BFS starts at the root and explores all neighbor nodes at the present depth before moving to the next level."
+        },
+        {
+          "question": "Which data structure is typically used for Breadth-First Search (BFS)?",
+          "options": ["Stack", "Queue (FIFO)", "Tree", "Array"],
+          "correct": 1,
+          "explanation": "BFS uses a Queue data structure (First-In, First-Out)."
+        },
+        {
+          "question": "Depth-First Search (DFS) typically uses which data structure?",
+          "options": ["Queue", "Stack (LIFO)", "Heuristic table", "Database"],
+          "correct": 1,
+          "explanation": "DFS explores as far as possible along each branch before backtracking, typically using a Stack."
+        },
+        {
+          "question": "What is a major advantage of Depth-First Search?",
+          "options": ["Guaranteed to find the shortest path", "Consumes less memory", "Always faster than BFS", "Uses domain knowledge"],
+          "correct": 1,
+          "explanation": "The document notes that DFS consumes less memory compared to BFS."
+        },
+        {
+          "question": "Which algorithm finds the cheapest path in an uninformed search space?",
+          "options": ["DFS", "Uniform Cost Search (UCS)", "Greedy Search", "Hill Climbing"],
+          "correct": 1,
+          "explanation": "Uniform Cost Search expands nodes based on their path cost, ensuring the cheapest path is found."
+        },
+        {
+          "question": "What does Informed Search use to guide its process?",
+          "options": ["Random numbers", "Domain-specific knowledge", "No extra info", "Opponent moves"],
+          "correct": 1,
+          "explanation": "Informed algorithms incorporate domain-specific knowledge to guide the search toward promising areas."
+        },
+        {
+          "question": "What is the key component of A* Search?",
+          "options": ["It only uses path cost", "It only uses heuristics", "It combines path cost and estimated cost to the goal", "It ignores the goal state"],
+          "correct": 2,
+          "explanation": "A* evaluates the cost to reach a node and the estimated cost (heuristic) to reach the goal from that node."
+        },
+        {
+          "question": "Which algorithm is described as 'one of the most powerful and widely used' in informed search?",
+          "options": ["Greedy Best-First", "A* Search", "Hill Climbing", "Simulated Annealing"],
+          "correct": 1,
+          "explanation": "The document identifies A* Search as one of the most powerful and widely used informed search methods."
+        },
+        {
+          "question": "How does Greedy Best-First Search decide which path to take?",
+          "options": ["It checks all paths", "It uses a heuristic to pick the most promising path in the moment", "It picks at random", "It uses the longest path"],
+          "correct": 1,
+          "explanation": "Greedy Best-First Search uses a heuristic to evaluate and follow the path that seems most promising at any given moment."
+        },
+        {
+          "question": "What is Adversarial Search primarily used for?",
+          "options": ["Sorting boxes", "Web scraping", "Competition/Games like Chess", "Network routing"],
+          "correct": 2,
+          "explanation": "Adversarial search introduces competition, facing an opponent in games where each move is a step in a complex space."
+        },
+        {
+          "question": "What is the cornerstone algorithm of Adversarial Search?",
+          "options": ["BFS", "DFS", "Minimax", "Hill Climbing"],
+          "correct": 2,
+          "explanation": "The document states that the Minimax algorithm is the cornerstone of Adversarial Search."
+        },
+        {
+          "question": "Which search algorithm is commonly used in network routing?",
+          "options": ["Uninformed Search", "Adversarial Search", "Heuristic Search", "Minimax"],
+          "correct": 0,
+          "explanation": "The 'Real-World Application' section notes that Uninformed search is used in tasks like network routing."
+        },
+        {
+          "question": "What powers navigation systems and puzzle-solving applications?",
+          "options": ["Uninformed search", "Informed search", "Manual search", "Random search"],
+          "correct": 1,
+          "explanation": "According to the document, Informed search powers navigation systems and puzzle-solving applications."
+        },
+        {
+          "question": "Which area is a home for Adversarial Search?",
+          "options": ["Network routing", "Financial modeling", "Sorting documents", "Social media feeds"],
+          "correct": 1,
+          "explanation": "Adversarial search finds its home in game playing, robotics, and even financial modeling."
+        },
+        {
+          "question": "Which algorithm explores the deepest nodes first?",
+          "options": ["BFS", "DFS", "UCS", "A*"],
+          "correct": 1,
+          "explanation": "Depth-First Search (DFS) explores as far as possible along each branch before backtracking."
+        },
+        {
+          "question": "What is the 'Goal State'?",
+          "options": ["The starting point", "A middle point", "The desired or target state", "An error message"],
+          "correct": 2,
+          "explanation": "The document defines the Goal State as the desired or target state."
+        },
+        {
+          "question": "What does a 'Transition Model' describe?",
+          "options": ["The cost of a path", "The outcome of each action", "The user interface", "The hardware components"],
+          "correct": 1,
+          "explanation": "The Transition Model describes the outcome of each action within the search algorithm framework."
+        },
+        {
+          "question": "Which algorithm is a hybrid that combines uninformed and informed search strengths?",
+          "options": ["BFS", "DFS", "A* Search", "Minimax"],
+          "correct": 2,
+          "explanation": "A* Search ensures the search is both efficient and thorough by combining the strengths of uninformed and informed search."
+        },
+        {
+          "question": "In Minimax, what does the algorithm assume about the opponent?",
+          "options": ["They will move randomly", "They will always choose the best possible move", "They will give up", "They will help the agent win"],
+          "correct": 1,
+          "explanation": "Minimax explores the game-tree assuming the opponent will always choose the best possible move."
+        },
+        {
+          "question": "What is the main drawback of Breadth-First Search mentioned in the text?",
+          "options": ["It is too fast", "High memory consumption", "It misses the goal", "It is only for games"],
+          "correct": 1,
+          "explanation": "The document notes that BFS can have high memory consumption because it stores all nodes at the current level."
+        },
+        {
+          "question": "Which informed search algorithm is mentioned as having an iterative and a recursive version?",
+          "options": ["A* Search", "Hill Climbing", "Best-First Search (IDA* and RBFS)", "Minimax"],
+          "correct": 2,
+          "explanation": "The document lists Iterative-Deepening A* (IDA*) and Recursive Best-First Search as examples of informed algorithms."
+        },
+        {
+          "question": "What does 'LIFO' stand for in the context of DFS?",
+          "options": ["Least In First Out", "Longest In Final Out", "Last-In, First-Out", "Linked Input File Output"],
+          "correct": 2,
+          "explanation": "DFS uses a Stack, which follows the Last-In, First-Out (LIFO) principle."
+        },
+        {
+          "question": "What does 'FIFO' stand for in the context of BFS?",
+          "options": ["First-In, First-Out", "Fast Input Fast Output", "File In File Out", "Final Input Final Output"],
+          "correct": 0,
+          "explanation": "BFS uses a Queue, which follows the First-In, First-Out (FIFO) principle."
+        },
+        {
+          "question": "Which terminology refers to a configuration or situation within the problem space?",
+          "options": ["Initial State", "Goal State", "State", "Search Space"],
+          "correct": 2,
+          "explanation": "A 'State' is defined as a configuration or situation within the problem space."
+        },
+        {
+          "question": "Which search algorithm 'backtracks' when it reaches a dead end?",
+          "options": ["BFS", "DFS", "Greedy Search", "Minimax"],
+          "correct": 1,
+          "explanation": "DFS explores a branch as far as possible and then backtracks to the next available branch."
+        },
+        {
+          "question": "Which of these is NOT an uninformed search algorithm?",
+          "options": ["BFS", "DFS", "A* Search", "Uniform Cost Search"],
+          "correct": 2,
+          "explanation": "A* Search is listed under 'Informed algorithms' because it uses heuristics."
+        },
+        {
+          "question": "Which of these is NOT an informed search algorithm?",
+          "options": ["Hill Climbing", "Simulated Annealing", "Depth-First Search", "Greedy Best-First Search"],
+          "correct": 2,
+          "explanation": "Depth-First Search is an Uninformed (Blind) search algorithm."
+        },
+        {
+          "question": "What is the goal of the Minimax algorithm?",
+          "options": ["To lose as fast as possible", "To maximize chances of winning by simulating counter-moves", "To ignore the opponent", "To find the shortest path to a city"],
+          "correct": 1,
+          "explanation": "By simulating possible and counter moves, Minimax determines optimal strategies to maximize winning chances."
+        },
+        {
+          "question": "What is the term for having a plan to navigate a complex labyrinth in AI?",
+          "options": ["Logic", "Search Algorithm", "Machine Learning", "Database management"],
+          "correct": 1,
+          "explanation": "The introduction compares a search algorithm to a guide through a complex labyrinth."
+        },
+        {
+          "question": "In A*, 'g(n)' usually represents the cost to reach the node. What does 'h(n)' represent?",
+          "options": ["The total cost", "The estimated cost to reach the goal (heuristic)", "The initial state cost", "The number of nodes explored"],
+          "correct": 1,
+          "explanation": "In A* Search, it evaluates the cost to reach the node and the 'estimate cost' (heuristic) to reach the goal."
+        },
+        {
+          "question": "Which algorithm is suitable for 'Sorting documents or organizing items'?",
+          "options": ["Search Algorithms", "Image Recognition", "Speech Synthesis", "Social Media"],
+          "correct": 0,
+          "explanation": "The document states SAs are used for physical tasks like sorting documents and organizing items."
+        },
+        {
+          "question": "What is the result of applying actions to the current state?",
+          "options": ["Goal State", "Transition to a new state", "Heuristic", "Algorithm termination"],
+          "correct": 1,
+          "explanation": "Applying actions or operations allows the SA to explore new configurations (states) in the search space."
+        },
+        {
+          "question": "Which search algorithm uses path cost to find the 'cheapest' route first?",
+          "options": ["BFS", "Uniform Cost Search", "DFS", "Greedy Search"],
+          "correct": 1,
+          "explanation": "Uniform Cost Search focuses specifically on path cost to ensure the cheapest path is explored."
+        },
+        {
+          "question": "In the 'Digital Age', why have search algorithms become indispensable?",
+          "options": ["They are fun to use", "They handle vast amounts of information with ease", "They replace human doctors", "They make computers look cool"],
+          "correct": 1,
+          "explanation": "The text states they enable us to handle vast amounts of information with ease and precision."
+        },
+        {
+          "question": "Which search involves 'assuming the opponent will always choose the best move'?",
+          "options": ["Informed Search", "Adversarial Search", "Uninformed Search", "Blind Search"],
+          "correct": 1,
+          "explanation": "Adversarial search, specifically Minimax, operates on the assumption of an optimal opponent."
+        },
+        {
+          "question": "Hill Climbing and Simulated Annealing are examples of what?",
+          "options": ["Uninformed Search", "Informed Search", "Physical tasks", "Labyrinths"],
+          "correct": 1,
+          "explanation": "Both Hill Climbing and Simulated Annealing are listed under 'Informed algorithms'."
+        },
+        {
+          "question": "What is the main difference between Informed and Uninformed search?",
+          "options": ["Informed uses extra domain-specific info (heuristics)", "Uninformed is always faster", "Informed is only for games", "There is no difference"],
+          "correct": 0,
+          "explanation": "Informed search uses domain-specific knowledge (heuristics), while uninformed search (blind) does not."
+        },
+        {
+          "question": "What is a 'Problem-solving agent' in the context of search?",
+          "options": ["A human repairman", "A rational agent utilizing search techniques", "A software bug", "A specialized sensor"],
+          "correct": 1,
+          "explanation": "The document mentions that search techniques are utilized by problem-solving agents to achieve goals."
+        },
+        {
+          "question": "Which algorithm is like 'having a guide that knows the most efficient path'?",
+          "options": ["Search Algorithm", "Random Search", "Labyrinth Search", "Manual Search"],
+          "correct": 0,
+          "explanation": "The text uses the 'guide' analogy to describe the efficiency of search algorithms."
+        },
+        {
+          "question": "Which algorithm 'combines' g(n) and h(n)?",
+          "options": ["Greedy Best-First", "A* Search", "BFS", "DFS"],
+          "correct": 1,
+          "explanation": "A* Search combines path cost (g) and heuristic estimate (h) to find the goal."
+        },
+        {
+          "question": "What is the set of all possible states called?",
+          "options": ["Initial State", "Goal State", "Search Space", "Path Cost"],
+          "correct": 2,
+          "explanation": "The set of all possible states reachable from the initial state is the Search Space."
+        },
+        {
+          "question": "What is 'Adversarial Search' compared to in the document?",
+          "options": ["A library", "A game of chess", "A shopping list", "A weather forecast"],
+          "correct": 1,
+          "explanation": "The document compares Adversarial Search to a game of chess involving competition."
         }
       ]
     };
@@ -524,11 +940,23 @@
           selectedAnswer: null,
           isAnswered: false,
           score: 0,
+          attempted: 0,
+          shuffledQuestions: [],
           quizData: QUIZ_DATA
         });
 
+        // Shuffle function
+        function shuffleArray(array) {
+          const shuffled = array.slice();
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          return shuffled;
+        }
+
         // Computed Properties (Reactive Logic)
-        const activeQuestions = computed(() => state.category ? state.quizData[state.category] : []);
+        const activeQuestions = computed(() => state.shuffledQuestions);
         const currentQuestionData = computed(() => activeQuestions.value[state.currentQuestion]);
         const isLastQuestion = computed(() => state.currentQuestion + 1 === activeQuestions.value.length);
 
@@ -536,8 +964,10 @@
         const actions = {
           startQuiz(cat) {
             state.category = cat;
+            state.shuffledQuestions = shuffleArray(state.quizData[cat]);
             state.currentQuestion = 0;
             state.score = 0;
+            state.attempted = 0;
             state.selectedAnswer = null;
             state.isAnswered = false;
             state.view = 'quiz';
@@ -546,6 +976,7 @@
             if (state.isAnswered) return;
             state.selectedAnswer = index;
             state.isAnswered = true;
+            state.attempted++;
             if (index === currentQuestionData.value.correct) state.score++;
           },
           next() {
@@ -557,11 +988,16 @@
               state.view = 'results';
             }
           },
+          finishEarly() {
+            state.view = 'results';
+          },
           reset() {
             state.view = 'landing';
             state.category = null;
             state.currentQuestion = 0;
             state.score = 0;
+            state.attempted = 0;
+            state.shuffledQuestions = [];
           }
         };
 
